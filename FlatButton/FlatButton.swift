@@ -10,7 +10,7 @@ import Cocoa
 import QuartzCore
 
 internal extension CALayer {
-    internal func animate(color: CGColor, keyPath: String, duration: Double) {
+    func animate(color: CGColor, keyPath: String, duration: Double) {
         if value(forKey: keyPath) as! CGColor? != color {
             let animation = CABasicAnimation(keyPath: keyPath)
             animation.toValue = color
@@ -21,16 +21,6 @@ internal extension CALayer {
             add(animation, forKey: keyPath)
             setValue(color, forKey: keyPath)
         }
-    }
-}
-
-//unused for now
-internal extension NSColor {
-    internal func tintedColor() -> NSColor {
-        var h = CGFloat(), s = CGFloat(), b = CGFloat(), a = CGFloat()
-        let rgbColor = usingColorSpaceName(NSColorSpaceName.calibratedRGB)
-        rgbColor?.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
-        return NSColor(hue: h, saturation: s, brightness: b == 0 ? 0.2 : b * 0.8, alpha: a)
     }
 }
 
@@ -60,9 +50,14 @@ open class FlatButton: NSButton, CALayerDelegate {
             animateColor(state == .on)
         }
     }
-    @IBInspectable public var cornerRadius: CGFloat = 4 {
+    @IBInspectable public var cornerRadius: CGRect = CGRect(x: 4, y: 4, width: 4, height: 4) {
         didSet {
-            layer?.cornerRadius = cornerRadius
+            let mask = CAShapeLayer()
+            mask.path = CGPath.make(roundedRect: CGRect(origin: CGPoint.zero, size: self.frame.size), topLeftRadius: cornerRadius.origin.x, topRightRadius: cornerRadius.origin.y, bottomLeftRadius: cornerRadius.size.width, bottomRightRadius: cornerRadius.size.height)
+            mask.frame = CGRect(origin: CGPoint.zero, size: self.frame.size)
+            //mask.path = CGPath(rect: CGRect(origin: CGPoint.zero, size: self.frame.size), transform: nil)
+            mask.fillColor = .black
+            layer?.mask = mask
         }
     }
     @IBInspectable public var borderWidth: CGFloat = 1 {
@@ -90,6 +85,16 @@ open class FlatButton: NSButton, CALayerDelegate {
             animateColor(state == .on)
         }
     }
+    @IBInspectable public var resizeIcon: Bool = false {
+        didSet {
+            setupImage()
+        }
+    }
+    @IBInspectable public var iconInset: CGFloat = 2 {
+        didSet {
+            setupImage()
+        }
+    }
     @IBInspectable public var iconColor: NSColor = NSColor.gray {
         didSet {
             animateColor(state == .on)
@@ -108,6 +113,11 @@ open class FlatButton: NSButton, CALayerDelegate {
     @IBInspectable public var activeTextColor: NSColor = NSColor.gray {
         didSet {
             animateColor(state == .on)
+        }
+    }
+    @IBInspectable public var padding: CGFloat = 0 {
+        didSet {
+            positionTitleAndImage()
         }
     }
     
@@ -157,9 +167,8 @@ open class FlatButton: NSButton, CALayerDelegate {
     
     internal func setup() {
         wantsLayer = true
-        layer?.masksToBounds = false
+        layer?.masksToBounds = true
         containerLayer.masksToBounds = false
-        layer?.cornerRadius = 4
         layer?.borderWidth = 1
         layer?.delegate = self
         //containerLayer.backgroundColor = NSColor.blue.withAlphaComponent(0.1).cgColor
@@ -216,19 +225,21 @@ open class FlatButton: NSButton, CALayerDelegate {
             break
         case .imageLeft:
             titleRect.origin.y = round((bounds.height - titleSize.height)/2)
-            titleRect.origin.x = bounds.width - titleSize.width - 6
+            titleRect.origin.x = bounds.width - titleSize.width - 6 + padding
             imageRect.origin.y = round((bounds.height - imageRect.height)/2)
-            imageRect.origin.x = hSpacing
+            imageRect.origin.x = hSpacing + padding
             break
         case .imageRight:
             titleRect.origin.y = round((bounds.height - titleSize.height)/2)
-            titleRect.origin.x = 2
+            titleRect.origin.x = 2 - padding
             imageRect.origin.y = round((bounds.height - imageRect.height)/2)
-            imageRect.origin.x = bounds.width - imageRect.width - hSpacing
+            imageRect.origin.x = bounds.width - imageRect.width - hSpacing - padding
             break
         default:
             titleRect.origin.y = round((bounds.height - titleSize.height)/2)
             titleRect.origin.x = round((bounds.width - titleSize.width)/2)
+            imageRect.origin.y = round((bounds.height - imageRect.height)/2)
+            imageRect.origin.x = round((bounds.width - imageRect.width)/2)
         }
         iconLayer.frame = imageRect
         alternateIconLayer.frame = imageRect
@@ -240,7 +251,15 @@ open class FlatButton: NSButton, CALayerDelegate {
             return
         }
         let maskLayer = CALayer()
-        let imageSize = image.size
+        var imageSize = image.size
+        if resizeIcon {
+            let buttonSize = self.frame.size;
+            let refSize = CGSize(width: buttonSize.width - iconInset * 2, height: buttonSize.height - iconInset * 2);
+            let widthFactor = refSize.width / imageSize.width;
+            let heightFactor = refSize.height / imageSize.height;
+            let factor = min(widthFactor, heightFactor);
+            imageSize = CGSize(width: imageSize.width * factor, height: imageSize.height * factor);
+        }
         var imageRect:CGRect = NSMakeRect(0, 0, imageSize.width, imageSize.height)
         let imageRef = image.cgImage(forProposedRect: &imageRect, context: nil, hints: nil)
         maskLayer.contents = imageRef
@@ -384,7 +403,64 @@ open class FlatButton: NSButton, CALayerDelegate {
     override open func updateLayer() {
         super.updateLayer()
     }
-    
-    
 }
 
+internal extension CGPath {
+    static func make(roundedRect rect: CGRect, topLeftRadius: CGFloat?, topRightRadius: CGFloat?, bottomLeftRadius: CGFloat?, bottomRightRadius: CGFloat?) -> CGPath {
+        let path = CGMutablePath()
+        
+        assert(((bottomLeftRadius ?? 0) + (bottomRightRadius ?? 0)) <= rect.size.width)
+        assert(((topLeftRadius ?? 0) + (topRightRadius ?? 0)) <= rect.size.width)
+        assert(((topLeftRadius ?? 0) + (bottomLeftRadius ?? 0)) <= rect.size.height)
+        assert(((topRightRadius ?? 0) + (bottomRightRadius ?? 0)) <= rect.size.height)
+        
+        // corner centers
+        let tl = CGPoint(x: rect.minX + (topLeftRadius ?? 0), y: rect.minY + (topLeftRadius ?? 0))
+        let tr = CGPoint(x: rect.maxX - (topRightRadius ?? 0), y: rect.minY + (topRightRadius ?? 0))
+        let bl = CGPoint(x: rect.minX + (bottomLeftRadius ?? 0), y: rect.maxY - (bottomLeftRadius ?? 0))
+        let br = CGPoint(x: rect.maxX - (bottomRightRadius ?? 0), y: rect.maxY - (bottomRightRadius ?? 0))
+        
+        //let topMidpoint = CGPoint(rect.midX, rect.minY)
+        let topMidpoint = CGPoint(x: rect.midX, y: rect.minY)
+        
+        makeClockwiseShape: do {
+            path.move(to: topMidpoint)
+            
+            if let topRightRadius = topRightRadius {
+                path.addLine(to: CGPoint(x: rect.maxX - topRightRadius, y: rect.minY))
+                path.addArc(center: tr, radius: topRightRadius, startAngle: -CGFloat.pi/2, endAngle: 0, clockwise: false)
+            }
+            else {
+                path.addLine(to: tr)
+            }
+            
+            if let bottomRightRadius = bottomRightRadius {
+                path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - bottomRightRadius))
+                path.addArc(center: br, radius: bottomRightRadius, startAngle: 0, endAngle: CGFloat.pi/2, clockwise: false)
+            }
+            else {
+                path.addLine(to: br)
+            }
+            
+            if let bottomLeftRadius = bottomLeftRadius {
+                path.addLine(to: CGPoint(x: rect.minX + bottomLeftRadius, y: rect.maxY))
+                path.addArc(center: bl, radius: bottomLeftRadius, startAngle: CGFloat.pi/2, endAngle: CGFloat.pi, clockwise: false)
+            }
+            else {
+                path.addLine(to: bl)
+            }
+            
+            if let topLeftRadius = topLeftRadius {
+                path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + topLeftRadius))
+                path.addArc(center: tl, radius: topLeftRadius, startAngle: CGFloat.pi, endAngle: -CGFloat.pi/2, clockwise: false)
+            }
+            else {
+                path.addLine(to: tl)
+            }
+            
+            path.closeSubpath()
+        }
+        
+        return path
+    }
+}

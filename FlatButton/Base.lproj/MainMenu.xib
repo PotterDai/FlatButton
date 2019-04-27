@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="12120"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="System colors introduced in macOS 10.14" minToolsVersion="10.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -628,7 +630,7 @@
                             <menuItem title="Show Sidebar" keyEquivalent="s" id="kIP-vf-haE">
                                 <modifierMask key="keyEquivalentModifierMask" control="YES" command="YES"/>
                                 <connections>
-                                    <action selector="toggleSourceList:" target="-1" id="iwa-gc-5KM"/>
+                                    <action selector="toggleSidebar:" target="-1" id="iwa-gc-5KM"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Enter Full Screen" keyEquivalent="f" id="4J7-dP-txa">
@@ -679,29 +681,29 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" frameAutosaveName="" animationBehavior="default" id="tD6-EV-c5k">
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="" animationBehavior="default" id="tD6-EV-c5k">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="283" y="305" width="480" height="270"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="jY5-DV-w6y">
                 <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button identifier="Trim" verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nbi-nY-6DS" customClass="FlatButton" customModule="FlatButton_Example" customModuleProvider="target">
+                    <button identifier="Trim" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nbi-nY-6DS" customClass="FlatButton" customModule="FlatButton_Example" customModuleProvider="target">
                         <rect key="frame" x="208" y="132" width="65" height="50"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="square" title="Trim" bezelStyle="shadowlessSquare" image="trim" imagePosition="above" alignment="center" alternateImage="trim" state="on" inset="2" id="5JA-u0-aPs">
+                        <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="NSUser" imagePosition="left" alignment="center" state="on" borderStyle="border" focusRingType="none" transparent="YES" inset="2" id="5JA-u0-aPs">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                         </buttonCell>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="boolean" keyPath="momentary" value="NO"/>
                             <userDefinedRuntimeAttribute type="color" keyPath="activeButtonColor">
-                                <color key="value" red="0.98429246020000005" green="0.98429246020000005" blue="0.98429246020000005" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="value" red="0.50528254530000005" green="0.50528254530000005" blue="0.50528254530000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="color" keyPath="buttonColor">
-                                <color key="value" red="0.98429246020000005" green="0.98429246020000005" blue="0.98429246020000005" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="value" name="unemphasizedSelectedContentBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="color" keyPath="iconColor">
                                 <color key="value" red="0.30822597099999999" green="0.34609693679999998" blue="0.38832893969999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -722,10 +724,64 @@
                                 <real key="value" value="0.0"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="number" keyPath="glowRadius">
-                                <real key="value" value="6"/>
+                                <real key="value" value="0.0"/>
                             </userDefinedRuntimeAttribute>
                             <userDefinedRuntimeAttribute type="number" keyPath="glowOpacity">
-                                <real key="value" value="1.5"/>
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="rect" keyPath="cornerRadius">
+                                <rect key="value" x="15" y="0.0" width="15" height="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="resizeIcon" value="YES"/>
+                            <userDefinedRuntimeAttribute type="number" keyPath="iconInset">
+                                <real key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="padding">
+                                <real key="value" value="-10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </button>
+                    <button identifier="Trim" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" tag="2" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mPd-SV-Hen" customClass="FlatButton" customModule="FlatButton_Example" customModuleProvider="target">
+                        <rect key="frame" x="208" y="61" width="65" height="50"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="square" title="Trim" bezelStyle="shadowlessSquare" image="NSUser" imagePosition="above" alignment="center" state="on" borderStyle="border" focusRingType="none" transparent="YES" inset="2" id="ikv-pc-QGc">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="smallSystem"/>
+                        </buttonCell>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="momentary" value="NO"/>
+                            <userDefinedRuntimeAttribute type="color" keyPath="activeButtonColor">
+                                <color key="value" red="0.50528254530000005" green="0.50528254530000005" blue="0.50528254530000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="buttonColor">
+                                <color key="value" name="unemphasizedSelectedContentBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="iconColor">
+                                <color key="value" red="0.30822597099999999" green="0.34609693679999998" blue="0.38832893969999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="activeIconColor">
+                                <color key="value" red="0.35108801719999999" green="0.61798810959999995" blue="0.97262704369999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                <color key="value" red="0.30822597099999999" green="0.34609693679999998" blue="0.38832893969999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="activeTextColor">
+                                <color key="value" red="0.35108801719999999" green="0.61798810959999995" blue="0.97262704369999997" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="onAnimationDuration">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="glowRadius">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="glowOpacity">
+                                <real key="value" value="0.0"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <real key="value" value="15"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </button>
@@ -735,6 +791,6 @@
         </window>
     </objects>
     <resources>
-        <image name="trim" width="29" height="28"/>
+        <image name="NSUser" width="32" height="32"/>
     </resources>
 </document>
